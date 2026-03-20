@@ -32,6 +32,20 @@ For release `v0.9.0`:
 5. Publish npm from `RUDIWER/rwtable-vue`.
 6. Let Packagist update from `RUDIWER/rwtable-laravel`.
 
+## Required GitHub Secrets
+
+- In `RUDIWER/rwtable-monorepo`:
+  - `RWTABLE_MIRROR_TOKEN` (used by split/tag workflows to push to mirror repos)
+- In `RUDIWER/rwtable-vue`:
+  - `NPM_TOKEN` (used by npm release workflow to publish package)
+
+`RWTABLE_MIRROR_TOKEN` is a GitHub Personal Access Token with write access to:
+
+- `RUDIWER/rwtable-vue`
+- `RUDIWER/rwtable-laravel`
+
+Without this token, monorepo workflows can run but cannot push code/tags to mirror repositories.
+
 ## Installation In Another Project
 
 After publication:

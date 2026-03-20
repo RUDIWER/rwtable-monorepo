@@ -8,26 +8,26 @@ This playbook describes how to keep one internal monorepo while publishing two i
 ## 1) One-time decisions
 
 - Mirror repositories:
-    - `RUDIWER/rwtable-vue`
-    - `RUDIWER/rwtable-laravel`
+  - `RUDIWER/rwtable-vue`
+  - `RUDIWER/rwtable-laravel`
 - Version policy:
-    - keep same `major.minor` for both packages
+  - keep same `major.minor` for both packages
 - Visibility and license:
-    - align legal and repository settings before first public release
+  - align legal and repository settings before first public release
 
 ## 2) Monorepo automation (already included)
 
 Workflows in this repository:
 
 - `.github/workflows/rwtable-split-sync.yml`
-    - on push to `main`
-    - splits and force-pushes:
-        - `packages/rwtable-vue` -> `RUDIWER/rwtable-vue:main`
-        - `packages/rwtable-laravel` -> `RUDIWER/rwtable-laravel:main`
+  - on push to `main`
+  - splits and force-pushes:
+    - `packages/rwtable-vue` -> `RUDIWER/rwtable-vue:main`
+    - `packages/rwtable-laravel` -> `RUDIWER/rwtable-laravel:main`
 
 - `.github/workflows/rwtable-mirror-tags.yml`
-    - on tag push `v*`
-    - mirrors the same tag to both package repositories
+  - on tag push `v*`
+  - mirrors the same tag to both package repositories
 
 Scripts used by workflows:
 
@@ -39,42 +39,67 @@ Scripts used by workflows:
 In the monorepo GitHub settings, create:
 
 - `RWTABLE_MIRROR_TOKEN`
-    - Personal Access Token (classic or fine-grained)
-    - needs write access to:
-        - `RUDIWER/rwtable-vue`
-        - `RUDIWER/rwtable-laravel`
+  - Personal Access Token (classic or fine-grained)
+  - needs write access to:
+    - `RUDIWER/rwtable-vue`
+    - `RUDIWER/rwtable-laravel`
+
+What this token does:
+
+- The split/tag workflows run inside `RUDIWER/rwtable-monorepo`.
+- Those workflows must push commits and tags to other repositories (`RUDIWER/rwtable-vue`, `RUDIWER/rwtable-laravel`).
+- `GITHUB_TOKEN` from one repo is usually not enough for cross-repo push, so a dedicated PAT is required.
+
+Recommended token setup (fine-grained PAT):
+
+1. Owner: your GitHub account (`RUDIWER`)
+2. Repository access: only selected repositories:
+   - `rwtable-vue`
+   - `rwtable-laravel`
+3. Permissions: `Contents` -> `Read and write`
+4. Store PAT in monorepo secret name: `RWTABLE_MIRROR_TOKEN`
+
+Secret path in GitHub:
+
+- `RUDIWER/rwtable-monorepo` -> `Settings` -> `Secrets and variables` -> `Actions` -> `New repository secret`
 
 ## 4) Mirror repository setup
 
 ## 4.1 `RUDIWER/rwtable-vue`
 
-Create `.github/workflows/release-npm.yml`:
+The npm release workflow is already versioned in this monorepo at:
+
+- `packages/rwtable-vue/.github/workflows/release-npm.yml`
+
+After split sync, it becomes `.github/workflows/release-npm.yml` in the mirror repo.
+
+Workflow content:
 
 ```yaml
 name: Release to npm
 
 on:
-    push:
-        tags:
-            - 'v*'
+  push:
+    tags:
+      - "v*"
 
 jobs:
-    publish:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 20
-                  registry-url: 'https://registry.npmjs.org'
-            - run: npm ci
-            - run: npm run build
-            - run: npm publish --access public
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+      - run: npm ci
+      - run: npm run build
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```
 
-Add secret in `rwtable-vue` mirror repo:
+Required secret in `rwtable-vue` mirror repo:
 
 - `NPM_TOKEN`
 
@@ -86,7 +111,13 @@ Packagist setup:
 2. Link the GitHub mirror repository
 3. Configure Packagist webhook for auto-update on push/tag
 
-Optional check workflow in mirror repo (`.github/workflows/ci.yml`):
+CI workflow is already versioned in this monorepo at:
+
+- `packages/rwtable-laravel/.github/workflows/ci.yml`
+
+After split sync, it becomes `.github/workflows/ci.yml` in the mirror repo.
+
+Workflow content:
 
 ```yaml
 name: Laravel Package CI
@@ -94,14 +125,14 @@ name: Laravel Package CI
 on: [push, pull_request]
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-            - uses: shivammathur/setup-php@v2
-              with:
-                  php-version: '8.3'
-            - run: composer install --no-interaction --prefer-dist
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+      - run: composer install --no-interaction --prefer-dist
 ```
 
 ## 5) Tag and release flow
@@ -118,8 +149,8 @@ Recommended process:
 ## 6) Versioning policy
 
 - Keep same `major.minor` across both packages:
-    - `rwtable-vue` `1.2.x`
-    - `rwtable-laravel` `1.2.x`
+  - `rwtable-vue` `1.2.x`
+  - `rwtable-laravel` `1.2.x`
 - Patch version can differ only when absolutely necessary
 - Avoid releasing one package with a breaking change without matching major bump in both docs
 
