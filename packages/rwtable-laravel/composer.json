@@ -1,0 +1,38 @@
+{
+    "name": "rudiwer/rwtable-laravel",
+    "description": "Reusable RWTable backend package for Laravel applications.",
+    "type": "library",
+    "license": "proprietary",
+    "keywords": [
+        "laravel",
+        "inertia",
+        "datatable",
+        "rwtable"
+    ],
+    "homepage": "https://github.com/RUDIWER/rwtable-laravel",
+    "support": {
+        "issues": "https://github.com/RUDIWER/rwtable-laravel/issues",
+        "source": "https://github.com/RUDIWER/rwtable-laravel"
+    },
+    "require": {
+        "php": "^8.3",
+        "illuminate/database": "^13.0",
+        "illuminate/http": "^13.0",
+        "illuminate/support": "^13.0",
+        "inertiajs/inertia-laravel": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rwsoft\\RwTableLaravel\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Rwsoft\\RwTableLaravel\\RwTableLaravelServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
