@@ -1,6 +1,6 @@
 {
   "name": "@rudiwer/rwtable-vue",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "private": false,
   "description": "Reusable RWTable Vue 3 component package.",
   "license": "MIT",
@@ -54,7 +54,7 @@
     "echarts": "^5.6.0",
     "echarts-gl": "^2.0.9",
     "exceljs": "^4.4.0",
-    "html2pdf.js": "^0.10.2",
+    "html2pdf.js": "^0.14.0",
     "lodash": "^4.17.21"
   }
 }

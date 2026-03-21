@@ -83,7 +83,7 @@ From `packages/rwtable-vue/package.json`:
 | dependency     | `echarts`         | `^5.6.0`   |
 | dependency     | `echarts-gl`      | `^2.0.9`   |
 | dependency     | `exceljs`         | `^4.4.0`   |
-| dependency     | `html2pdf.js`     | `^0.10.2`  |
+| dependency     | `html2pdf.js`     | `^0.14.0`  |
 
 ### Server package (`rudiwer/rwtable-laravel`)
 
