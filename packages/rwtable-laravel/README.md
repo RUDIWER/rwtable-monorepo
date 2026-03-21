@@ -36,11 +36,11 @@ Monorepo split/release blueprint:
 
 ### Minimum supported versions (current package constraints)
 
-| Layer                       | Minimum |
-| --------------------------- | ------- |
-| PHP                         | `8.3`   |
-| Laravel                     | `13.0`  |
-| `inertiajs/inertia-laravel` | `3.0`   |
+| Layer                       | Minimum    |
+| --------------------------- | ---------- |
+| PHP                         | `8.3`      |
+| Laravel                     | `13.0`     |
+| `inertiajs/inertia-laravel` | `3.0 beta` |
 
 Notes:
 
@@ -49,13 +49,13 @@ Notes:
 
 From `composer.json`:
 
-| Package                     | Version |
-| --------------------------- | ------- |
-| `php`                       | `^8.3`  |
-| `illuminate/database`       | `^13.0` |
-| `illuminate/http`           | `^13.0` |
-| `illuminate/support`        | `^13.0` |
-| `inertiajs/inertia-laravel` | `^3.0`  |
+| Package                     | Version     |
+| --------------------------- | ----------- |
+| `php`                       | `^8.3`      |
+| `illuminate/database`       | `^13.0`     |
+| `illuminate/http`           | `^13.0`     |
+| `illuminate/support`        | `^13.0`     |
+| `inertiajs/inertia-laravel` | `^3.0@beta` |
 
 ---
 
@@ -86,13 +86,13 @@ Add a path repository in your app `composer.json`:
 
 ```json
 {
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../packages/rwtable-laravel",
-            "options": { "symlink": true }
-        }
-    ]
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../packages/rwtable-laravel",
+      "options": { "symlink": true }
+    }
+  ]
 }
 ```
 
@@ -200,9 +200,9 @@ All routes are user-scoped (authenticated user only).
 
 ```json
 {
-    "id": "nullable|integer|exists:rw_table_exports,id",
-    "description": "required|string|max:255",
-    "config": "required|array"
+  "id": "nullable|integer|exists:rw_table_exports,id",
+  "description": "required|string|max:255",
+  "config": "required|array"
 }
 ```
 
@@ -212,9 +212,9 @@ Core fields:
 
 ```json
 {
-    "id": "nullable|integer|exists:rw_table_charts,id",
-    "description": "required|string|max:255",
-    "config": "required|array"
+  "id": "nullable|integer|exists:rw_table_charts,id",
+  "description": "required|string|max:255",
+  "config": "required|array"
 }
 ```
 
@@ -233,41 +233,41 @@ Practical chart payload (all common fields):
 
 ```json
 {
-    "id": 12,
-    "description": "Registrations by school year",
-    "config": {
-        "builder": {
-            "dataset": {
-                "x_field": "school_year",
-                "metric_field": "amount",
-                "aggregate": "sum",
-                "series_field": "status",
-                "limit": 25,
-                "sort_direction": "desc"
-            },
-            "chart": {
-                "type": "bar",
-                "orientation": "vertical",
-                "stacked": false,
-                "show_legend": true
-            },
-            "presentation": {
-                "allow_chart_type_change": true
-            }
-        },
-        "xAxis": "school_year",
-        "yAxis": "amount",
-        "operation": "sum",
-        "seriesField": "status",
-        "series": ["todo", "in_progress", "done"],
+  "id": 12,
+  "description": "Registrations by school year",
+  "config": {
+    "builder": {
+      "dataset": {
+        "x_field": "school_year",
+        "metric_field": "amount",
+        "aggregate": "sum",
+        "series_field": "status",
+        "limit": 25,
+        "sort_direction": "desc"
+      },
+      "chart": {
         "type": "bar",
         "orientation": "vertical",
         "stacked": false,
-        "showLegend": true,
-        "allowViewerChartTypeChange": true,
-        "limit": 25,
-        "sortDirection": "desc"
-    }
+        "show_legend": true
+      },
+      "presentation": {
+        "allow_chart_type_change": true
+      }
+    },
+    "xAxis": "school_year",
+    "yAxis": "amount",
+    "operation": "sum",
+    "seriesField": "status",
+    "series": ["todo", "in_progress", "done"],
+    "type": "bar",
+    "orientation": "vertical",
+    "stacked": false,
+    "showLegend": true,
+    "allowViewerChartTypeChange": true,
+    "limit": 25,
+    "sortDirection": "desc"
+  }
 }
 ```
 
@@ -275,38 +275,38 @@ Practical export payload (all common fields):
 
 ```json
 {
-    "id": 9,
-    "description": "Active registrations export",
-    "config": {
-        "columns": [
-            {
-                "key": "id",
-                "label": "ID",
-                "selected": true,
-                "width": 80
-            },
-            {
-                "key": "name",
-                "label": "Name",
-                "selected": true,
-                "width": 220
-            },
-            {
-                "key": "status",
-                "label": "Status",
-                "selected": true,
-                "width": 140
-            },
-            {
-                "key": "created_at",
-                "label": "Created at",
-                "selected": false,
-                "width": 180
-            }
-        ],
-        "includeHeader": true,
-        "fileName": "registrations-active"
-    }
+  "id": 9,
+  "description": "Active registrations export",
+  "config": {
+    "columns": [
+      {
+        "key": "id",
+        "label": "ID",
+        "selected": true,
+        "width": 80
+      },
+      {
+        "key": "name",
+        "label": "Name",
+        "selected": true,
+        "width": 220
+      },
+      {
+        "key": "status",
+        "label": "Status",
+        "selected": true,
+        "width": 140
+      },
+      {
+        "key": "created_at",
+        "label": "Created at",
+        "selected": false,
+        "width": 180
+      }
+    ],
+    "includeHeader": true,
+    "fileName": "registrations-active"
+  }
 }
 ```
 
@@ -364,35 +364,35 @@ Practical `handle` request payload (all key arrays):
 
 ```json
 {
-    "page": 1,
-    "rowsPerPage": 25,
-    "sortField": "title",
-    "sortOrder": "asc",
-    "global": "school",
-    "columns": [
-        { "key": "id", "selected": true, "label": "ID" },
-        { "key": "title", "selected": true, "label": "Title" },
-        { "key": "status", "selected": true, "label": "Status" }
-    ],
-    "filters": {
-        "status": "todo",
-        "title": "project",
-        "created_at": { "from": "2026-01-01", "to": "2026-12-31" }
-    },
-    "filterModes": {
-        "status": "=",
-        "title": "contains",
-        "created_at": "between"
-    },
-    "filterTypes": {
-        "status": "text",
-        "title": "text",
-        "created_at": "date"
-    },
-    "selectionFilter": "exclude",
-    "selectedRowIds": [12, 14],
-    "manualOrdering": 0,
-    "manualOrderField": "sort_index"
+  "page": 1,
+  "rowsPerPage": 25,
+  "sortField": "title",
+  "sortOrder": "asc",
+  "global": "school",
+  "columns": [
+    { "key": "id", "selected": true, "label": "ID" },
+    { "key": "title", "selected": true, "label": "Title" },
+    { "key": "status", "selected": true, "label": "Status" }
+  ],
+  "filters": {
+    "status": "todo",
+    "title": "project",
+    "created_at": { "from": "2026-01-01", "to": "2026-12-31" }
+  },
+  "filterModes": {
+    "status": "=",
+    "title": "contains",
+    "created_at": "between"
+  },
+  "filterTypes": {
+    "status": "text",
+    "title": "text",
+    "created_at": "date"
+  },
+  "selectionFilter": "exclude",
+  "selectedRowIds": [12, 14],
+  "manualOrdering": 0,
+  "manualOrderField": "sort_index"
 }
 ```
 
@@ -410,21 +410,21 @@ Practical `update` payload with full arrays:
 
 ```json
 {
-    "field": "product_id",
-    "value": 0,
-    "validationType": "client",
-    "validationRules": "nullable|integer|min:0",
-    "extraUpdates": [
-        { "field": "title", "value": "Custom product title" },
-        { "field": "status", "value": "todo" },
-        { "field": "tags", "value": ["backend", "urgent"] }
-    ],
-    "extraValidationRules": {
-        "title": "required|string|max:120",
-        "status": "required|in:todo,in_progress,done",
-        "tags": "nullable|array",
-        "tags.*": "string|in:todo,backend,frontend,security,urgent,nice_to_have"
-    }
+  "field": "product_id",
+  "value": 0,
+  "validationType": "client",
+  "validationRules": "nullable|integer|min:0",
+  "extraUpdates": [
+    { "field": "title", "value": "Custom product title" },
+    { "field": "status", "value": "todo" },
+    { "field": "tags", "value": ["backend", "urgent"] }
+  ],
+  "extraValidationRules": {
+    "title": "required|string|max:120",
+    "status": "required|in:todo,in_progress,done",
+    "tags": "nullable|array",
+    "tags.*": "string|in:todo,backend,frontend,security,urgent,nice_to_have"
+  }
 }
 ```
 
@@ -441,22 +441,22 @@ Practical `create` payload with all common fields:
 
 ```json
 {
-    "product_id": 2,
-    "title": "Created from inline row",
-    "owner": "Admin",
-    "status": "todo",
-    "priority": "medium",
-    "is_active": true,
-    "notes": "Created in RWTable sandbox",
-    "tags": ["frontend", "nice_to_have"],
-    "sort_index": 3000,
-    "validationType": "model",
-    "validationRules": {
-        "title": "required|string|max:120"
-    },
-    "manualOrdering": true,
-    "manualOrderField": "sort_index",
-    "insertAboveId": 25
+  "product_id": 2,
+  "title": "Created from inline row",
+  "owner": "Admin",
+  "status": "todo",
+  "priority": "medium",
+  "is_active": true,
+  "notes": "Created in RWTable sandbox",
+  "tags": ["frontend", "nice_to_have"],
+  "sort_index": 3000,
+  "validationType": "model",
+  "validationRules": {
+    "title": "required|string|max:120"
+  },
+  "manualOrdering": true,
+  "manualOrderField": "sort_index",
+  "insertAboveId": 25
 }
 ```
 

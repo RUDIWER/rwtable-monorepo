@@ -43,6 +43,7 @@ In the monorepo GitHub settings, create:
   - needs write access to:
     - `RUDIWER/rwtable-vue`
     - `RUDIWER/rwtable-laravel`
+  - must also allow workflow file updates in mirror repos
 
 What this token does:
 
@@ -57,7 +58,12 @@ Recommended token setup (fine-grained PAT):
    - `rwtable-vue`
    - `rwtable-laravel`
 3. Permissions: `Contents` -> `Read and write`
-4. Store PAT in monorepo secret name: `RWTABLE_MIRROR_TOKEN`
+4. Also allow workflow updates (if available in your UI as `Workflows`)
+5. Store PAT in monorepo secret name: `RWTABLE_MIRROR_TOKEN`
+
+Fallback when fine-grained UI does not expose workflow permission:
+
+- Use a classic PAT with scopes `repo` + `workflow`.
 
 Secret path in GitHub:
 

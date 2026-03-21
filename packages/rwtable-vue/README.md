@@ -38,18 +38,18 @@ RWTable is split into two independent layers:
 (Both layers can be used separately, but full feature parity requires both.)
 
 1. **Client layer (`@rudiwer/rwtable-vue`)**
-    - Vue 3 table component
-    - filtering, sorting, infinite scroll
-    - inline edit/create/delete
-    - chart and excel config UIs
-    - keyboard navigation
-    - multi-select autocomplete with chips
+   - Vue 3 table component
+   - filtering, sorting, infinite scroll
+   - inline edit/create/delete
+   - chart and excel config UIs
+   - keyboard navigation
+   - multi-select autocomplete with chips
 
 2. **Server layer (`rudiwer/rwtable-laravel`)**
-    - reusable Laravel actions for table data operations
-    - persisted chart/export configurations per user + table identifier
-    - route registration and validation
-    - translation namespace loading and publishing
+   - reusable Laravel actions for table data operations
+   - persisted chart/export configurations per user + table identifier
+   - route registration and validation
+   - translation namespace loading and publishing
 
 ---
 
@@ -61,7 +61,7 @@ RWTable is split into two independent layers:
 | --------------------------- | ---------------------------------------- |
 | PHP                         | `8.3`                                    |
 | Laravel                     | `13.0`                                   |
-| `inertiajs/inertia-laravel` | `3.0`                                    |
+| `inertiajs/inertia-laravel` | `3.0 beta`                               |
 | Vue                         | `3.4`                                    |
 | `@inertiajs/vue3`           | `2.0`                                    |
 | Tailwind CSS                | `3.2` (recommended for intended styling) |
@@ -89,13 +89,13 @@ From `packages/rwtable-vue/package.json`:
 
 From `packages/rwtable-laravel/composer.json`:
 
-| Type    | Package                     | Version |
-| ------- | --------------------------- | ------- |
-| require | `php`                       | `^8.3`  |
-| require | `illuminate/database`       | `^13.0` |
-| require | `illuminate/http`           | `^13.0` |
-| require | `illuminate/support`        | `^13.0` |
-| require | `inertiajs/inertia-laravel` | `^3.0`  |
+| Type    | Package                     | Version     |
+| ------- | --------------------------- | ----------- |
+| require | `php`                       | `^8.3`      |
+| require | `illuminate/database`       | `^13.0`     |
+| require | `illuminate/http`           | `^13.0`     |
+| require | `illuminate/support`        | `^13.0`     |
+| require | `inertiajs/inertia-laravel` | `^3.0@beta` |
 
 ---
 
@@ -124,9 +124,9 @@ Development (path/workspace) example:
 
 ```json
 {
-    "dependencies": {
-        "@rudiwer/rwtable-vue": "file:../packages/rwtable-vue"
-    }
+  "dependencies": {
+    "@rudiwer/rwtable-vue": "file:../packages/rwtable-vue"
+  }
 }
 ```
 
@@ -134,14 +134,14 @@ Import and use:
 
 ```vue
 <script setup>
-import { RwTable } from '@rudiwer/rwtable-vue';
+import { RwTable } from "@rudiwer/rwtable-vue";
 
 const tableData = { data: [], total: 0 };
-const columns = [{ key: 'id', label: 'ID', type: 'number' }];
+const columns = [{ key: "id", label: "ID", type: "number" }];
 </script>
 
 <template>
-    <RwTable :data="tableData" :columns="columns" />
+  <RwTable :data="tableData" :columns="columns" />
 </template>
 ```
 
@@ -155,13 +155,13 @@ Development (path repository) example:
 
 ```json
 {
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../packages/rwtable-laravel",
-            "options": { "symlink": true }
-        }
-    ]
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../packages/rwtable-laravel",
+      "options": { "symlink": true }
+    }
+  ]
 }
 ```
 
@@ -310,173 +310,168 @@ Use this as a copy/paste reference when you want to see all major props in one p
 
 ```vue
 <script setup>
-import { RwTable } from '@rudiwer/rwtable-vue';
+import { RwTable } from "@rudiwer/rwtable-vue";
 
 const rows = {
-    data: [],
-    total: 0,
-    current_page: 1,
-    last_page: 1,
+  data: [],
+  total: 0,
+  current_page: 1,
+  last_page: 1,
 };
 
 const columns = [];
 const checkedRows = [];
 
 function validationAdapter({ value, rules, column, row, trigger }) {
-    if (
-        column?.key === 'title' &&
-        trigger === 'save' &&
-        String(value || '').trim() === ''
-    ) {
-        return 'Title is required.';
-    }
+  if (
+    column?.key === "title" &&
+    trigger === "save" &&
+    String(value || "").trim() === ""
+  ) {
+    return "Title is required.";
+  }
 
-    return null;
+  return null;
 }
 
 function beforeInlineDelete({ id, row }) {
-    if (row?.is_locked) {
-        return { proceed: false };
-    }
+  if (row?.is_locked) {
+    return { proceed: false };
+  }
 
-    return { proceed: true, payload: { hard_delete: false } };
+  return { proceed: true, payload: { hard_delete: false } };
 }
 </script>
 
 <template>
-    <RwTable
-        :data="rows"
-        :columns="columns"
-        table-id="admin-rwtable-full-reference"
-        id-key="id"
-        initial-height="calc(100vh - 280px)"
-        :horizontal-scroll="true"
-        :checkbox-column="true"
-        v-model:checkedRows="checkedRows"
-        :global-search="true"
-        search-field-width="25%"
-        search-field-min-width="220px"
-        :show-record-count="true"
-        :row-quantity-select="true"
-        :row-options="[10, 25, 50, 100]"
-        :menu-items="[
-            {
-                key: 'exportSelection',
-                label: 'Export selection',
-                icon: 'mdi-download',
-            },
-            {
-                key: 'bulkArchive',
-                label: 'Archive selected',
-                icon: 'mdi-archive',
-            },
-        ]"
-        inline-update-route="/admin/tasks/:id/inline"
-        :inline-delete-route="(id) => `/admin/tasks/${id}`"
-        :before-inline-delete="beforeInlineDelete"
-        charts="true"
-        excel="true"
-        :cell-style="
-            ({ row, col }) =>
-                row?.is_active === false ? { opacity: 0.7 } : null
-        "
-        :cell-class="
-            ({ col }) => (col.key === 'priority' ? 'font-medium' : null)
-        "
-        :start-on-mount="true"
-        :initial-data="rows"
-        :auto-edit-last-row-first-field="false"
-        :inline-create="true"
-        :inline-create-route="() => '/admin/tasks/inline-create'"
-        :inline-create-button="true"
-        :inline-create-defaults="{ status: 'todo', is_active: true }"
-        :manual-ordering="false"
-        manual-order-field="sort_index"
-        :row-menu="true"
-        :row-menu-items="
-            (row) => [
-                { key: 'edit', label: 'Edit', icon: 'mdi-pencil' },
-                {
-                    key: 'insertAbove',
-                    label: 'Insert above',
-                    icon: 'mdi-arrow-up',
-                },
-                { key: 'insert', label: 'New row', icon: 'mdi-plus' },
-                {
-                    key: 'delete',
-                    label: 'Delete',
-                    icon: 'mdi-delete',
-                    color: 'red',
-                },
-                {
-                    key: 'customAction',
-                    label: 'Custom action',
-                    icon: 'mdi-star',
-                    disabled: !!row?.is_locked,
-                },
-            ]
-        "
-        :managed="true"
-        :server-side="false"
-        :data-source="{
-            type: 'axios',
-            path: '/admin/tasks/data',
-            method: 'get',
-            data: null,
-            params: () => ({ context: 'rwtable-docs' }),
-            preserve: true,
-        }"
-        url-sync="none"
-        columns-param-mode="full"
-        :param-map="{
-            page: 'page',
-            rowsPerPage: 'rowsPerPage',
-            sortField: 'sortField',
-            sortOrder: 'sortOrder',
-            global: 'global',
-            columns: 'columns',
-            filters: 'filters',
-            filterModes: 'filterModes',
-            filterTypes: 'filterTypes',
-            selectionFilter: 'selectionFilter',
-            selectedRowIds: 'selectedRowIds',
-            manualOrdering: 'manualOrdering',
-            manualOrderField: 'manualOrderField',
-        }"
-        :response-map="{
-            data: 'data',
-            total: 'total',
-            current: 'current_page',
-            last: 'last_page',
-        }"
-        :options="{
-            scrollMode: 'infinite',
-            infinite: {
-                rootMargin: '220px',
-                resetOnSort: true,
-                sortJumpMode: 'first',
-            },
-        }"
-        sort-field="id"
-        sort-order="asc"
-        :i18n="{
-            locale: 'en',
-            messages: {
-                actions: { back: 'Back', save: 'Save' },
-                columns: { title: 'Title', status: 'Status' },
-            },
-        }"
-        validation-mode="both"
-        :client-validation-on="['tab', 'blur', 'save']"
-        :validation-adapter="validationAdapter"
-        @on-cell-click="
-            (field, id, value) => console.log('cell', field, id, value)
-        "
-        @on-menu-item-click="(payload) => console.log('toolbar', payload)"
-        @on-row-menu-item-click="(payload) => console.log('row-menu', payload)"
-        @change="(payload) => console.log('server-change', payload)"
-        @update:checkedRows="(ids) => console.log('checkedRows', ids)"
-    />
+  <RwTable
+    :data="rows"
+    :columns="columns"
+    table-id="admin-rwtable-full-reference"
+    id-key="id"
+    initial-height="calc(100vh - 280px)"
+    :horizontal-scroll="true"
+    :checkbox-column="true"
+    v-model:checkedRows="checkedRows"
+    :global-search="true"
+    search-field-width="25%"
+    search-field-min-width="220px"
+    :show-record-count="true"
+    :row-quantity-select="true"
+    :row-options="[10, 25, 50, 100]"
+    :menu-items="[
+      {
+        key: 'exportSelection',
+        label: 'Export selection',
+        icon: 'mdi-download',
+      },
+      {
+        key: 'bulkArchive',
+        label: 'Archive selected',
+        icon: 'mdi-archive',
+      },
+    ]"
+    inline-update-route="/admin/tasks/:id/inline"
+    :inline-delete-route="(id) => `/admin/tasks/${id}`"
+    :before-inline-delete="beforeInlineDelete"
+    charts="true"
+    excel="true"
+    :cell-style="
+      ({ row, col }) => (row?.is_active === false ? { opacity: 0.7 } : null)
+    "
+    :cell-class="({ col }) => (col.key === 'priority' ? 'font-medium' : null)"
+    :start-on-mount="true"
+    :initial-data="rows"
+    :auto-edit-last-row-first-field="false"
+    :inline-create="true"
+    :inline-create-route="() => '/admin/tasks/inline-create'"
+    :inline-create-button="true"
+    :inline-create-defaults="{ status: 'todo', is_active: true }"
+    :manual-ordering="false"
+    manual-order-field="sort_index"
+    :row-menu="true"
+    :row-menu-items="
+      (row) => [
+        { key: 'edit', label: 'Edit', icon: 'mdi-pencil' },
+        {
+          key: 'insertAbove',
+          label: 'Insert above',
+          icon: 'mdi-arrow-up',
+        },
+        { key: 'insert', label: 'New row', icon: 'mdi-plus' },
+        {
+          key: 'delete',
+          label: 'Delete',
+          icon: 'mdi-delete',
+          color: 'red',
+        },
+        {
+          key: 'customAction',
+          label: 'Custom action',
+          icon: 'mdi-star',
+          disabled: !!row?.is_locked,
+        },
+      ]
+    "
+    :managed="true"
+    :server-side="false"
+    :data-source="{
+      type: 'axios',
+      path: '/admin/tasks/data',
+      method: 'get',
+      data: null,
+      params: () => ({ context: 'rwtable-docs' }),
+      preserve: true,
+    }"
+    url-sync="none"
+    columns-param-mode="full"
+    :param-map="{
+      page: 'page',
+      rowsPerPage: 'rowsPerPage',
+      sortField: 'sortField',
+      sortOrder: 'sortOrder',
+      global: 'global',
+      columns: 'columns',
+      filters: 'filters',
+      filterModes: 'filterModes',
+      filterTypes: 'filterTypes',
+      selectionFilter: 'selectionFilter',
+      selectedRowIds: 'selectedRowIds',
+      manualOrdering: 'manualOrdering',
+      manualOrderField: 'manualOrderField',
+    }"
+    :response-map="{
+      data: 'data',
+      total: 'total',
+      current: 'current_page',
+      last: 'last_page',
+    }"
+    :options="{
+      scrollMode: 'infinite',
+      infinite: {
+        rootMargin: '220px',
+        resetOnSort: true,
+        sortJumpMode: 'first',
+      },
+    }"
+    sort-field="id"
+    sort-order="asc"
+    :i18n="{
+      locale: 'en',
+      messages: {
+        actions: { back: 'Back', save: 'Save' },
+        columns: { title: 'Title', status: 'Status' },
+      },
+    }"
+    validation-mode="both"
+    :client-validation-on="['tab', 'blur', 'save']"
+    :validation-adapter="validationAdapter"
+    @on-cell-click="(field, id, value) => console.log('cell', field, id, value)"
+    @on-menu-item-click="(payload) => console.log('toolbar', payload)"
+    @on-row-menu-item-click="(payload) => console.log('row-menu', payload)"
+    @change="(payload) => console.log('server-change', payload)"
+    @update:checkedRows="(ids) => console.log('checkedRows', ids)"
+  />
 </template>
 ```
 
@@ -514,44 +509,44 @@ Practical full usage example:
 
 ```vue
 <RwAutocompleteInput
-    v-model="form.tags"
-    :items="tagOptions"
-    item-title="title"
-    item-value="value"
-    :search-fields="['title', 'value']"
-    :display-value="null"
-    :allow-custom="true"
-    :custom-trim="true"
-    :custom-min-length="2"
-    name="tags"
-    aria-label="Select tags"
-    data-create-field="tags"
-    :invalid="Boolean(errors.tags)"
-    :error-message="errors.tags || ''"
-    :required-missing="false"
-    required-highlight-color="rgba(255, 0, 0, 0.08)"
-    :disabled="false"
-    :multiple="true"
-    :show-checkboxes="true"
-    :selection-chips="true"
-    :max-selection-chips="5"
-    :close-on-select="false"
-    :messages="{
-        autocomplete: {
-            more: 'more',
-            no_results: 'No results',
-            use_custom_value: 'Use custom value:',
-        },
-    }"
-    @update:modelValue="
-        (value) => {
-            form.tags = value;
-        }
-    "
-    @resolve="(payload) => console.log('resolve', payload)"
-    @blur="() => console.log('blur')"
-    @focus="() => console.log('focus')"
-    @keydown="(event) => console.log('keydown', event.key)"
+  v-model="form.tags"
+  :items="tagOptions"
+  item-title="title"
+  item-value="value"
+  :search-fields="['title', 'value']"
+  :display-value="null"
+  :allow-custom="true"
+  :custom-trim="true"
+  :custom-min-length="2"
+  name="tags"
+  aria-label="Select tags"
+  data-create-field="tags"
+  :invalid="Boolean(errors.tags)"
+  :error-message="errors.tags || ''"
+  :required-missing="false"
+  required-highlight-color="rgba(255, 0, 0, 0.08)"
+  :disabled="false"
+  :multiple="true"
+  :show-checkboxes="true"
+  :selection-chips="true"
+  :max-selection-chips="5"
+  :close-on-select="false"
+  :messages="{
+    autocomplete: {
+      more: 'more',
+      no_results: 'No results',
+      use_custom_value: 'Use custom value:',
+    },
+  }"
+  @update:modelValue="
+    (value) => {
+      form.tags = value;
+    }
+  "
+  @resolve="(payload) => console.log('resolve', payload)"
+  @blur="() => console.log('blur')"
+  @focus="() => console.log('focus')"
+  @keydown="(event) => console.log('keydown', event.key)"
 />
 ```
 
@@ -665,111 +660,111 @@ Exposed methods:
 
 ```js
 const columns = [
-    {
-        // core
-        key: 'title',
-        label: 'Title',
-        labelKey: 'title',
-        labelTranslations: {
-            en: 'Title',
-            nl: 'Titel',
-            fr: 'Titre',
-            de: 'Titel',
-            default: 'Title',
-        },
-        type: 'text',
-        width: 220,
-        align: 'left',
-        selected: true,
-        sortable: true,
-        filterable: true,
-        clickable: false,
-        aria: { label: 'Title column' },
-
-        // inline edit/create
-        editable: true,
-        editField: 'product_id',
-        editInput: 'autocomplete',
-        editItems: [
-            {
-                value: 1,
-                title: 'P-1001 - Product A',
-                sku: 'P-1001',
-                name: 'Product A',
-                description: 'Example product',
-            },
-            {
-                value: 2,
-                title: 'P-1002 - Product B',
-                sku: 'P-1002',
-                name: 'Product B',
-                description: 'Example product',
-            },
-        ],
-        editItemTitle: 'title',
-        editItemValue: 'value',
-        editSearchFields: ['sku', 'name', 'description'],
-        editDisplayFields: {
-            title: 'name',
-            product_code: 'sku',
-        },
-        defaultInsertValue: 0,
-
-        // multi-select autocomplete
-        editMultiple: false,
-        editShowCheckboxes: false,
-        editSelectionChips: true,
-        editMaxSelectionChips: 3,
-        editCloseOnSelect: true,
-
-        // custom autocomplete value flow
-        editAutocompleteAllowCustom: true,
-        editCustomTrim: true,
-        editCustomMinLength: 2,
-        editCustomField: 'title',
-        editCustomSentinelField: 'product_id',
-        editCustomSentinelValue: 0,
-        editCustomClearOnSelect: true,
-        editCustomResetValueOnSelect: '',
-        editCustomPrimaryValueOnCustom: 0,
-
-        // validation
-        required: true,
-        validationType: 'client',
-        validationRules: 'nullable|integer|min:0',
-        clientValidate: ({ value }) =>
-            value === null ? 'Value is required.' : null,
-        clientValidationOn: ['tab', 'blur', 'save'],
-        requiredHighlightColor: 'rgba(255, 0, 0, 0.08)',
-        editExtraValidationRules: {
-            title: 'required|string|max:120',
-        },
-        editCustomFieldValidationRules: 'required|string|max:120',
-        editCustomSentinelValidationRules: 'required|integer|min:0',
-
-        // resolve side effects
-        editSelectExtraUpdates: {
-            title: 'name',
-            product_code: 'sku',
-        },
-
-        // boolean rendering
-        booleanLabels: { true: 'Yes', false: 'No' },
-        booleanTrueLabel: 'Yes',
-        booleanFalseLabel: 'No',
-
-        // icon/chip rendering
-        iconValue: (row) => row.status,
-        iconMap: {
-            todo: 'mdi-progress-clock',
-            done: 'mdi-check-circle',
-            default: 'mdi-help-circle',
-        },
-        iconColorMap: { todo: 'orange', done: 'green', default: 'slate' },
-        colorKey: 'status_color',
-        chipPrependIcon: 'mdi-flag',
-        chipDefaultColor: 'slate',
+  {
+    // core
+    key: "title",
+    label: "Title",
+    labelKey: "title",
+    labelTranslations: {
+      en: "Title",
+      nl: "Titel",
+      fr: "Titre",
+      de: "Titel",
+      default: "Title",
     },
+    type: "text",
+    width: 220,
+    align: "left",
+    selected: true,
+    sortable: true,
+    filterable: true,
+    clickable: false,
+    aria: { label: "Title column" },
+
+    // inline edit/create
+    editable: true,
+    editField: "product_id",
+    editInput: "autocomplete",
+    editItems: [
+      {
+        value: 1,
+        title: "P-1001 - Product A",
+        sku: "P-1001",
+        name: "Product A",
+        description: "Example product",
+      },
+      {
+        value: 2,
+        title: "P-1002 - Product B",
+        sku: "P-1002",
+        name: "Product B",
+        description: "Example product",
+      },
+    ],
+    editItemTitle: "title",
+    editItemValue: "value",
+    editSearchFields: ["sku", "name", "description"],
+    editDisplayFields: {
+      title: "name",
+      product_code: "sku",
+    },
+    defaultInsertValue: 0,
+
+    // multi-select autocomplete
+    editMultiple: false,
+    editShowCheckboxes: false,
+    editSelectionChips: true,
+    editMaxSelectionChips: 3,
+    editCloseOnSelect: true,
+
+    // custom autocomplete value flow
+    editAutocompleteAllowCustom: true,
+    editCustomTrim: true,
+    editCustomMinLength: 2,
+    editCustomField: "title",
+    editCustomSentinelField: "product_id",
+    editCustomSentinelValue: 0,
+    editCustomClearOnSelect: true,
+    editCustomResetValueOnSelect: "",
+    editCustomPrimaryValueOnCustom: 0,
+
+    // validation
+    required: true,
+    validationType: "client",
+    validationRules: "nullable|integer|min:0",
+    clientValidate: ({ value }) =>
+      value === null ? "Value is required." : null,
+    clientValidationOn: ["tab", "blur", "save"],
+    requiredHighlightColor: "rgba(255, 0, 0, 0.08)",
+    editExtraValidationRules: {
+      title: "required|string|max:120",
+    },
+    editCustomFieldValidationRules: "required|string|max:120",
+    editCustomSentinelValidationRules: "required|integer|min:0",
+
+    // resolve side effects
+    editSelectExtraUpdates: {
+      title: "name",
+      product_code: "sku",
+    },
+
+    // boolean rendering
+    booleanLabels: { true: "Yes", false: "No" },
+    booleanTrueLabel: "Yes",
+    booleanFalseLabel: "No",
+
+    // icon/chip rendering
+    iconValue: (row) => row.status,
+    iconMap: {
+      todo: "mdi-progress-clock",
+      done: "mdi-check-circle",
+      default: "mdi-help-circle",
+    },
+    iconColorMap: { todo: "orange", done: "green", default: "slate" },
+    colorKey: "status_color",
+    chipPrependIcon: "mdi-flag",
+    chipDefaultColor: "slate",
+  },
 ];
 ```
 
@@ -850,7 +845,7 @@ Trigger control:
 Default client triggers:
 
 ```js
-['tab', 'blur', 'save'];
+["tab", "blur", "save"];
 ```
 
 Validation sources:
@@ -909,25 +904,25 @@ Client usage:
 
 ```vue
 <RwTable
-    :data="initialTasks"
-    :columns="columns"
-    :managed="true"
-    :start-on-mount="true"
-    :data-source="{
-        type: 'axios',
-        path: '/admin/tasks/data',
-        method: 'get',
-        params: () => ({ context: 'managed-demo' }),
-    }"
-    :options="{
-        scrollMode: 'infinite',
-        infinite: {
-            rootMargin: '220px',
-            resetOnSort: true,
-            sortJumpMode: 'first',
-        },
-    }"
-    url-sync="none"
+  :data="initialTasks"
+  :columns="columns"
+  :managed="true"
+  :start-on-mount="true"
+  :data-source="{
+    type: 'axios',
+    path: '/admin/tasks/data',
+    method: 'get',
+    params: () => ({ context: 'managed-demo' }),
+  }"
+  :options="{
+    scrollMode: 'infinite',
+    infinite: {
+      rootMargin: '220px',
+      resetOnSort: true,
+      sortJumpMode: 'first',
+    },
+  }"
+  url-sync="none"
 />
 ```
 
@@ -954,51 +949,51 @@ Client usage:
 
 ```vue
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 
 const tableData = ref({ data: [], total: 0, current_page: 1, last_page: 1 });
-const lastSignature = ref('');
+const lastSignature = ref("");
 
 async function onServerChange(payload) {
-    const response = await window.axios.get('/admin/tasks/data', {
-        params: payload,
-    });
-    const next = response.data;
+  const response = await window.axios.get("/admin/tasks/data", {
+    params: payload,
+  });
+  const next = response.data;
 
-    const isInfinite = true;
-    const isAppendCandidate =
-        isInfinite &&
-        Number(next.current_page || 1) >
-            Number(tableData.value.current_page || 1) &&
-        JSON.stringify({ ...payload, page: 1 }) === lastSignature.value;
+  const isInfinite = true;
+  const isAppendCandidate =
+    isInfinite &&
+    Number(next.current_page || 1) >
+      Number(tableData.value.current_page || 1) &&
+    JSON.stringify({ ...payload, page: 1 }) === lastSignature.value;
 
-    if (isAppendCandidate) {
-        const seen = new Set(tableData.value.data.map((row) => row.id));
-        const merged = [...tableData.value.data];
+  if (isAppendCandidate) {
+    const seen = new Set(tableData.value.data.map((row) => row.id));
+    const merged = [...tableData.value.data];
 
-        for (const row of next.data || []) {
-            if (!seen.has(row.id)) {
-                seen.add(row.id);
-                merged.push(row);
-            }
-        }
-
-        tableData.value = { ...next, data: merged };
-    } else {
-        tableData.value = next;
-        lastSignature.value = JSON.stringify({ ...payload, page: 1 });
+    for (const row of next.data || []) {
+      if (!seen.has(row.id)) {
+        seen.add(row.id);
+        merged.push(row);
+      }
     }
+
+    tableData.value = { ...next, data: merged };
+  } else {
+    tableData.value = next;
+    lastSignature.value = JSON.stringify({ ...payload, page: 1 });
+  }
 }
 </script>
 
 <template>
-    <RwTable
-        :data="tableData"
-        :columns="columns"
-        :server-side="true"
-        :options="{ scrollMode: 'infinite' }"
-        @change="onServerChange"
-    />
+  <RwTable
+    :data="tableData"
+    :columns="columns"
+    :server-side="true"
+    :options="{ scrollMode: 'infinite' }"
+    @change="onServerChange"
+  />
 </template>
 ```
 
@@ -1108,9 +1103,9 @@ Typical response formats:
 
 ```json
 {
-    "id": "nullable|exists:rw_table_exports,id",
-    "description": "required|string|max:255",
-    "config": "required|array"
+  "id": "nullable|exists:rw_table_exports,id",
+  "description": "required|string|max:255",
+  "config": "required|array"
 }
 ```
 
@@ -1120,9 +1115,9 @@ Supports both legacy and builder config keys. Required:
 
 ```json
 {
-    "id": "nullable|exists:rw_table_charts,id",
-    "description": "required|string|max:255",
-    "config": "required|array"
+  "id": "nullable|exists:rw_table_charts,id",
+  "description": "required|string|max:255",
+  "config": "required|array"
 }
 ```
 
@@ -1228,14 +1223,14 @@ Route::delete('/admin/tasks/{id}', [TaskController::class, 'inlineDelete']);
 
 ```json
 {
-    "field": "title",
-    "value": "New value",
-    "validationType": "model",
-    "validationRules": "required|string|max:255",
-    "extraUpdates": [{ "field": "status", "value": "done" }],
-    "extraValidationRules": {
-        "status": "required|string"
-    }
+  "field": "title",
+  "value": "New value",
+  "validationType": "model",
+  "validationRules": "required|string|max:255",
+  "extraUpdates": [{ "field": "status", "value": "done" }],
+  "extraValidationRules": {
+    "status": "required|string"
+  }
 }
 ```
 
@@ -1243,15 +1238,15 @@ Route::delete('/admin/tasks/{id}', [TaskController::class, 'inlineDelete']);
 
 ```json
 {
-    "title": "New row",
-    "status": "open",
-    "validationType": "model",
-    "validationRules": {
-        "title": "required|string|max:255"
-    },
-    "manualOrdering": true,
-    "manualOrderField": "index",
-    "insertAboveId": 123
+  "title": "New row",
+  "status": "open",
+  "validationType": "model",
+  "validationRules": {
+    "title": "required|string|max:255"
+  },
+  "manualOrdering": true,
+  "manualOrderField": "index",
+  "insertAboveId": 123
 }
 ```
 
@@ -1352,40 +1347,40 @@ Fallback order per column:
 
 ```vue
 <script setup>
-import { RwTable } from '@rudiwer/rwtable-vue';
+import { RwTable } from "@rudiwer/rwtable-vue";
 
 const data = {
-    data: [
-        { id: 1, title: 'Task A', status: 'Open' },
-        { id: 2, title: 'Task B', status: 'Done' },
-    ],
-    total: 2,
+  data: [
+    { id: 1, title: "Task A", status: "Open" },
+    { id: 2, title: "Task B", status: "Done" },
+  ],
+  total: 2,
 };
 
 const columns = [
-    { key: 'id', label: 'ID', labelKey: 'id', type: 'number', selected: true },
-    {
-        key: 'title',
-        label: 'Title',
-        labelKey: 'title',
-        type: 'text',
-        filterable: true,
-        editable: true,
-        validationType: 'client',
-        validationRules: 'required|string|max:255',
-    },
-    {
-        key: 'status',
-        label: 'Status',
-        labelKey: 'status',
-        type: 'text',
-        filterable: true,
-    },
+  { key: "id", label: "ID", labelKey: "id", type: "number", selected: true },
+  {
+    key: "title",
+    label: "Title",
+    labelKey: "title",
+    type: "text",
+    filterable: true,
+    editable: true,
+    validationType: "client",
+    validationRules: "required|string|max:255",
+  },
+  {
+    key: "status",
+    label: "Status",
+    labelKey: "status",
+    type: "text",
+    filterable: true,
+  },
 ];
 </script>
 
 <template>
-    <RwTable :data="data" :columns="columns" table-id="tasks-client" />
+  <RwTable :data="data" :columns="columns" table-id="tasks-client" />
 </template>
 ```
 
@@ -1393,17 +1388,17 @@ const columns = [
 
 ```vue
 <RwTable
-    table-id="tasks-managed"
-    :data="tasks"
-    :columns="columns"
-    :managed="true"
-    :data-source="{
-        type: 'inertia',
-        path: '/admin/tasks',
-        method: 'get',
-        data: 'tasks',
-    }"
-    :columns-param-mode="'keys'"
+  table-id="tasks-managed"
+  :data="tasks"
+  :columns="columns"
+  :managed="true"
+  :data-source="{
+    type: 'inertia',
+    path: '/admin/tasks',
+    method: 'get',
+    data: 'tasks',
+  }"
+  :columns-param-mode="'keys'"
 />
 ```
 
@@ -1456,11 +1451,11 @@ Option A (recommended for page-specific behavior): add a local CSS override in y
 ```vue
 <style scoped>
 :deep(.rw-id-hover) {
-    color: rgb(15 23 42);
+  color: rgb(15 23 42);
 }
 
 :deep(.rw-id-hover:hover) {
-    color: rgb(15 23 42);
+  color: rgb(15 23 42);
 }
 </style>
 ```
@@ -1469,13 +1464,13 @@ Option B: use `cellClass`/`cellStyle` for per-column custom styling.
 
 ```vue
 <RwTable
-    ...
-    :cell-class="
-        ({ col }) => (col.key === 'id' ? 'text-slate-900 font-semibold' : null)
-    "
-    :cell-style="
-        ({ col }) => (col.key === 'id' ? { color: 'rgb(15 23 42)' } : null)
-    "
+  ...
+  :cell-class="
+    ({ col }) => (col.key === 'id' ? 'text-slate-900 font-semibold' : null)
+  "
+  :cell-style="
+    ({ col }) => (col.key === 'id' ? { color: 'rgb(15 23 42)' } : null)
+  "
 />
 ```
 
