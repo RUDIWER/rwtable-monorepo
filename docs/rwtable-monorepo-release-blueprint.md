@@ -117,6 +117,13 @@ Packagist setup:
 2. Link the GitHub mirror repository
 3. Configure Packagist webhook for auto-update on push/tag
 
+Recommended webhook values in `RUDIWER/rwtable-laravel` -> `Settings` -> `Webhooks`:
+
+- Payload URL: `https://packagist.org/api/github?username=<packagist-username>`
+- Content type: `application/json`
+- Secret: Packagist `SAFE API token` (fallback to `MAIN API token` only if delivery keeps failing)
+- Events: `Just the push event`
+
 CI workflow is already versioned in this monorepo at:
 
 - `packages/rwtable-laravel/.github/workflows/ci.yml`
