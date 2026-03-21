@@ -21,13 +21,13 @@ Use these manuals as entry points:
 - `scripts/split` subtree mirror scripts
 - `docs` release and operational documentation
 
-## Release Flow (v0.9.0)
+## Release Flow (vX.Y.Z)
 
-For release `v0.9.0`:
+For a new release tag (example `v0.9.1`):
 
 1. Push `main` in this monorepo.
 2. Let the split workflow sync both mirror repositories.
-3. Create and push tag `v0.9.0` from this monorepo.
+3. Create and push tag `vX.Y.Z` from this monorepo.
 4. Let the tag mirror workflow push the same tag to both mirrors.
 5. Publish npm from `RUDIWER/rwtable-vue`.
 6. Let Packagist update from `RUDIWER/rwtable-laravel`.
