@@ -14,9 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout monorepo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Remove checkout auth header
+        run: git config --global --unset-all http.https://github.com/.extraheader || true
 
       - name: Configure git identity
         run: |
