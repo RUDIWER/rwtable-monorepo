@@ -21,7 +21,7 @@ sync_prefix() {
 
     echo "[split-sync] Pushing ${prefix} (${split_sha}) to ${target_repo}:${DEFAULT_BRANCH}"
     local remote_url="https://x-access-token:${RWTABLE_MIRROR_TOKEN}@github.com/${target_repo}.git"
-    git push "$remote_url" "${split_sha}:refs/heads/${DEFAULT_BRANCH}" --force
+    git -c credential.helper= -c http.https://github.com/.extraheader= push "$remote_url" "${split_sha}:refs/heads/${DEFAULT_BRANCH}" --force
 }
 
 sync_prefix "packages/rwtable-vue" "$RWTABLE_VUE_REPO"

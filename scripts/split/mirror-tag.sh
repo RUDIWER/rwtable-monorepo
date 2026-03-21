@@ -26,7 +26,7 @@ push_tag_for_prefix() {
 
     echo "[mirror-tag] Pushing tag ${TAG_NAME} (${split_sha}) to ${target_repo}"
     local remote_url="https://x-access-token:${RWTABLE_MIRROR_TOKEN}@github.com/${target_repo}.git"
-    git push "$remote_url" "${split_sha}:refs/tags/${TAG_NAME}" --force
+    git -c credential.helper= -c http.https://github.com/.extraheader= push "$remote_url" "${split_sha}:refs/tags/${TAG_NAME}" --force
 }
 
 push_tag_for_prefix "packages/rwtable-vue" "$RWTABLE_VUE_REPO"
