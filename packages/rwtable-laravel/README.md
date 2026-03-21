@@ -36,11 +36,11 @@ Monorepo split/release blueprint:
 
 ### Minimum supported versions (current package constraints)
 
-| Layer                       | Minimum    |
-| --------------------------- | ---------- |
-| PHP                         | `8.3`      |
-| Laravel                     | `13.0`     |
-| `inertiajs/inertia-laravel` | `3.0 beta` |
+| Layer                       | Minimum                    |
+| --------------------------- | -------------------------- |
+| PHP                         | `8.3`                      |
+| Laravel                     | `13.0`                     |
+| `inertiajs/inertia-laravel` | `2.0 (stable) or 3.0 beta` |
 
 Notes:
 
@@ -49,13 +49,13 @@ Notes:
 
 From `composer.json`:
 
-| Package                     | Version     |
-| --------------------------- | ----------- |
-| `php`                       | `^8.3`      |
-| `illuminate/database`       | `^13.0`     |
-| `illuminate/http`           | `^13.0`     |
-| `illuminate/support`        | `^13.0`     |
-| `inertiajs/inertia-laravel` | `^3.0@beta` |
+| Package                     | Version |
+| --------------------------- | ------- | --- | ---------- |
+| `php`                       | `^8.3`  |
+| `illuminate/database`       | `^13.0` |
+| `illuminate/http`           | `^13.0` |
+| `illuminate/support`        | `^13.0` |
+| `inertiajs/inertia-laravel` | `^2.0   |     | ^3.0@beta` |
 
 ---
 

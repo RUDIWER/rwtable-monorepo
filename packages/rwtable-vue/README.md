@@ -61,7 +61,7 @@ RWTable is split into two independent layers:
 | --------------------------- | ---------------------------------------- |
 | PHP                         | `8.3`                                    |
 | Laravel                     | `13.0`                                   |
-| `inertiajs/inertia-laravel` | `3.0 beta`                               |
+| `inertiajs/inertia-laravel` | `2.0 (stable) or 3.0 beta`               |
 | Vue                         | `3.4`                                    |
 | `@inertiajs/vue3`           | `2.0`                                    |
 | Tailwind CSS                | `3.2` (recommended for intended styling) |
@@ -89,13 +89,13 @@ From `packages/rwtable-vue/package.json`:
 
 From `packages/rwtable-laravel/composer.json`:
 
-| Type    | Package                     | Version     |
-| ------- | --------------------------- | ----------- |
-| require | `php`                       | `^8.3`      |
-| require | `illuminate/database`       | `^13.0`     |
-| require | `illuminate/http`           | `^13.0`     |
-| require | `illuminate/support`        | `^13.0`     |
-| require | `inertiajs/inertia-laravel` | `^3.0@beta` |
+| Type    | Package                     | Version |
+| ------- | --------------------------- | ------- | --- | ---------- |
+| require | `php`                       | `^8.3`  |
+| require | `illuminate/database`       | `^13.0` |
+| require | `illuminate/http`           | `^13.0` |
+| require | `illuminate/support`        | `^13.0` |
+| require | `inertiajs/inertia-laravel` | `^2.0   |     | ^3.0@beta` |
 
 ---
 
