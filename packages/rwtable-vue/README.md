@@ -35,6 +35,10 @@ Backend-only deep dive is available at:
 - `packages/rwtable-laravel/README.md`
 - monorepo split/release blueprint: `docs/rwtable-monorepo-release-blueprint.md`
 
+## Demo video
+
+https://youtu.be/AOOwaVZxRiQ
+
 ## Table of Contents
 
 1. [Architecture](#architecture)

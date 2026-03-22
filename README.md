@@ -30,6 +30,10 @@ This repository contains only the publishable RWTable packages:
 - `packages/rwtable-vue` -> npm package `@rudiwer/rwtable-vue`
 - `packages/rwtable-laravel` -> Composer package `rudiwer/rwtable-laravel`
 
+## Demo video
+
+https://youtu.be/AOOwaVZxRiQ
+
 ## Documentation Index
 
 Use these manuals as entry points:

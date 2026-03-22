@@ -2,7 +2,7 @@
   "name": "rudiwer/rwtable-laravel",
   "description": "Reusable RWTable backend package for Laravel applications.",
   "type": "library",
-  "license": "proprietary",
+  "license": "MIT",
   "keywords": [
     "laravel",
     "inertia",
