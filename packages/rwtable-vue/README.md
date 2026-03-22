@@ -1,5 +1,30 @@
 # RWTable Documentation
 
+RWTable is a combined package consisting of a Vue 3 table component and a server-side Laravel / Inertia action class.
+
+The table is specifically designed for use with Vue 3 / Inertia / Laravel. The styling is based on Tailwind CSS, and a Vuetify-styled version will be available soon.  
+The table itself can also be used independently of Inertia and Laravel, but Excel export and chart export currently still rely fully on Inertia.
+
+The following features are available:
+
+- Client- or server-side data handling
+- Pagination (with configurable row counts) or endless scroll
+- General search field
+- Column sorting
+- Config menu with adjustable table height and toggleable horizontal/vertical scrolling
+- Column selection and reordering for table visibility
+- Resizable column widths and column reordering
+- Sticky (fixed) columns
+- Per-column filtering with logical expressions
+- Excel export
+- Chart export (based on ECharts.js)
+- Custom actions menu to add your own functionality
+- Multi-language support according to Laravel standards
+- Inline editing
+- Column layouts with chips, icons, custom date formatting, select and autocomplete fields
+- Client-side and/or server-side validation during editing
+- Custom actions on column / cell click and more...
+
 Comprehensive guide for the RWTable ecosystem:
 
 - **Client package**: `@rudiwer/rwtable-vue` (Coming soon rwtable-vuetify)
@@ -112,7 +137,7 @@ php artisan migrate
 
 Use matching major/minor versions for both packages (`x.y`).
 
-### Advanced (local development install)
+### Maintainer local development (optional)
 
 ### 1) Install client package
 
@@ -120,7 +145,7 @@ Use matching major/minor versions for both packages (`x.y`).
 npm install @rudiwer/rwtable-vue
 ```
 
-Development (path/workspace) example:
+Path/workspace example:
 
 ```json
 {
@@ -145,7 +170,13 @@ const columns = [{ key: "id", label: "ID", type: "number" }];
 </template>
 ```
 
-### 2) Install server package
+Import RWTable CSS once in your app entry (or wrapper component):
+
+```js
+import "@rudiwer/rwtable-vue/dist/rwtable-vue.css";
+```
+
+### 2) Install server package (optional for full stack testing)
 
 ```bash
 composer require rudiwer/rwtable-laravel
@@ -301,6 +332,52 @@ Source: `packages/rwtable-vue/src/RwTable.vue`.
   total: 'total',
   current: 'current_page',
   last: 'last_page',
+}
+```
+
+### Toolbar 3-dot menu (top-right)
+
+Use `menuItems` to show the top-right toolbar menu and hook custom actions:
+
+```js
+const menuItems = [
+  { key: "exportSelection", label: "Export selection", icon: "mdi-download" },
+  { key: "bulkArchive", label: "Archive selected", icon: "mdi-archive" },
+  { key: "logContext", label: "Log context", icon: "mdi-console" },
+];
+```
+
+When a user clicks a toolbar menu item, RWTable emits `on-menu-item-click` with full table context:
+
+```js
+{
+  item,
+  filters,
+  filterModes,
+  filterTypes,
+  global,
+  selectionFilter,
+  selectedRowIds,
+  sortField,
+  sortOrder,
+  page,
+  rowsPerPage,
+}
+```
+
+Practical handler example:
+
+```js
+function onToolbarMenuItemClick(payload) {
+  if (payload?.item?.key === "logContext") {
+    console.log("RWTable toolbar payload", payload);
+    return;
+  }
+
+  if (payload?.item?.key === "exportSelection") {
+    // Use payload.filters + payload.sortField + payload.selectedRowIds
+    // to call your own export endpoint.
+  }
 }
 ```
 
@@ -581,17 +658,22 @@ Exposed methods:
 
 ### Inline edit/create fields
 
-| Key                  | Type      | Description                                          |
-| -------------------- | --------- | ---------------------------------------------------- |
-| `editable`           | `Boolean` | Cell editable                                        |
-| `editField`          | `String`  | Backend field name (different from display key)      |
-| `editInput`          | `String`  | `select` or `autocomplete`                           |
-| `editItems`          | `Array`   | Select/autocomplete options                          |
-| `editItemTitle`      | `String`  | Label field in `editItems` (default `title`)         |
-| `editItemValue`      | `String`  | Value field in `editItems` (default `value`)         |
-| `editSearchFields`   | `Array`   | Extra searchable fields for autocomplete             |
-| `editDisplayFields`  | `Object`  | Map of display fields to update from selected option |
-| `defaultInsertValue` | `Mixed`   | Pre-filled value in create row                       |
+| Key                  | Type      | Description                                                |
+| -------------------- | --------- | ---------------------------------------------------------- |
+| `editable`           | `Boolean` | Cell editable                                              |
+| `editField`          | `String`  | Backend field name (different from display key)            |
+| `filterField`        | `String`  | Field used for option-based filtering payload              |
+| `editInput`          | `String`  | `select` or `autocomplete`                                 |
+| `editItems`          | `Array`   | Select/autocomplete options                                |
+| `filterItems`        | `Array`   | Optional dedicated option source for filter popup          |
+| `editItemTitle`      | `String`  | Label field in `editItems` (default `title`)               |
+| `editItemValue`      | `String`  | Value field in `editItems` (default `value`)               |
+| `filterItemTitle`    | `String`  | Label field in `filterItems` (fallback `editItemTitle`)    |
+| `filterItemValue`    | `String`  | Value field in `filterItems` (fallback `editItemValue`)    |
+| `filterInput`        | `String`  | Force filter input type (`autocomplete` or default select) |
+| `editSearchFields`   | `Array`   | Extra searchable fields for autocomplete                   |
+| `editDisplayFields`  | `Object`  | Map of display fields to update from selected option       |
+| `defaultInsertValue` | `Mixed`   | Pre-filled value in create row                             |
 
 ### Multi-select autocomplete fields
 
@@ -656,6 +738,79 @@ Exposed methods:
 | `chipPrependIcon`  | `String`   | Optional icon before chip label |
 | `chipDefaultColor` | `String`   | Fallback chip color             |
 
+### Date/datetime display fields
+
+| Key                   | Type     | Description                                                                 |
+| --------------------- | -------- | --------------------------------------------------------------------------- |
+| `dateDisplayFormat`   | `String` | Optional display pattern for `date`/`datetime` columns (`dd/MM/yyyy HH:mm`) |
+| `dateDisplayFallback` | `String` | Optional fallback text when value cannot be parsed (default `-`)            |
+| `dateAssumeTimezone`  | `String` | Parsing mode for timezone-less values: `auto` (default), `local`, `utc`     |
+
+Supported pattern tokens:
+
+- `dd`, `d`
+- `MM`, `M`
+- `yyyy`, `yy`
+- `HH`, `H`
+- `mm`, `m`
+- `ss`, `s`
+
+Date formatting is only applied when `dateDisplayFormat` is present on the column.
+Without `dateDisplayFormat`, RWTable keeps existing behavior and returns the raw value.
+
+Practical recipes:
+
+```js
+// Date only (from datetime source)
+{
+  key: "created_at",
+  type: "date",
+  dateDisplayFormat: "dd/MM/yyyy",
+  dateAssumeTimezone: "local",
+}
+
+// Time only
+{
+  key: "created_time",
+  type: "datetime",
+  dateDisplayFormat: "HH:mm",
+  dateAssumeTimezone: "local",
+}
+
+// Date + time with seconds
+{
+  key: "updated_at",
+  type: "datetime",
+  dateDisplayFormat: "dd/MM/yy HH:mm:ss",
+  dateDisplayFallback: "No date/time",
+  dateAssumeTimezone: "local",
+}
+
+// Force UTC interpretation for timezone-less values
+{
+  key: "sent_at",
+  type: "datetime",
+  dateDisplayFormat: "dd/MM/yyyy HH:mm",
+  dateAssumeTimezone: "utc",
+}
+```
+
+### Filter operators for option columns
+
+For columns that use `editInput: "select"` or `editInput: "autocomplete"`, RWTable can render option-aware operators in the filter popup.
+
+| Operator value    | UI label        | Behavior                                                                           |
+| ----------------- | --------------- | ---------------------------------------------------------------------------------- |
+| `option_contains` | Contains option | Single value: contains match. Multi-value: ALL selected options must be present.   |
+| `option_equals`   | Equals option   | Single value: exact value. Multi-value: exact set match (no missing/extra values). |
+
+Notes:
+
+- RWTable automatically switches the filter input between free text and option list based on selected operator.
+- Option filters prefer `filterField`, then `editField`, then column `key`.
+- Option lists prefer `filterItems`, then `editItems`, then derived unique values from current rows.
+- For `editMultiple === true`, use checkbox list/chips via existing autocomplete props (`editShowCheckboxes`, `editSelectionChips`, `editCloseOnSelect`, ...).
+
 ### Practical full column object (all keys)
 
 ```js
@@ -680,6 +835,11 @@ const columns = [
     filterable: true,
     clickable: false,
     aria: { label: "Title column" },
+
+    // date/datetime display (only used for type: 'date' or 'datetime')
+    dateDisplayFormat: "dd/MM/yyyy HH:mm",
+    dateDisplayFallback: "-",
+    dateAssumeTimezone: "auto", // auto | local | utc
 
     // inline edit/create
     editable: true,
@@ -774,13 +934,15 @@ const columns = [
 
 ### `RwTable` emits
 
-| Event                    | Payload                                          |
-| ------------------------ | ------------------------------------------------ |
-| `on-cell-click`          | `(field, id, value)`                             |
-| `on-menu-item-click`     | `{ item, selectedRowIds }`                       |
-| `on-row-menu-item-click` | `{ item, row }`                                  |
-| `change`                 | request payload object (server-side/manual mode) |
-| `update:checkedRows`     | `Array` of selected ids                          |
+| Event                    | Payload                                                                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `on-cell-click`          | `(field, id, value)`                                                                                                            |
+| `on-menu-item-click`     | `{ item, filters, filterModes, filterTypes, global, selectionFilter, selectedRowIds, sortField, sortOrder, page, rowsPerPage }` |
+| `on-row-menu-item-click` | `{ item, row }`                                                                                                                 |
+| `change`                 | request payload object (server-side/manual mode)                                                                                |
+| `update:checkedRows`     | `Array` of selected ids                                                                                                         |
+
+`on-menu-item-click` is emitted by the top-right toolbar menu and includes the current table state, so custom actions (export, reports, bulk operations) can reuse active filters and sorting context.
 
 ### `RwAutocompleteInput` emits
 
@@ -868,6 +1030,13 @@ RWTable sends a normalized payload (mapped by `paramMap`) containing:
 - selection filter context
 - optional columns metadata
 - manual ordering flags
+
+For option filters, `filterModes` can include:
+
+- `option_contains`
+- `option_equals`
+
+When option mode is active, filter keys are mapped to `filterField` (or `editField`) when present.
 
 Expected response (mapped by `responseMap`):
 

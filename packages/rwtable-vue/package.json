@@ -1,6 +1,6 @@
 {
   "name": "@rudiwer/rwtable-vue",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "private": false,
   "description": "Reusable RWTable Vue 3 component package.",
   "license": "MIT",
@@ -28,7 +28,8 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./contracts": "./src/contracts/rwtableContract.js"
+    "./contracts": "./src/contracts/rwtableContract.js",
+    "./dist/rwtable-vue.css": "./dist/rwtable-vue.css"
   },
   "files": [
     "dist",

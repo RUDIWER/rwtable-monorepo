@@ -503,6 +503,28 @@ class RwTableAction
 
     private static function applyFilter(Builder $query, string $column, string $filterType, string $mode, mixed $value): void
     {
+        if ($mode === 'option_contains' || $mode === 'option_equals') {
+            $values = self::normalizeOptionFilterValues($value);
+
+            if ($values === []) {
+                return;
+            }
+
+            if ($mode === 'option_equals') {
+                if (count($values) === 1) {
+                    $query->where($column, '=', $values[0]);
+                }
+
+                return;
+            }
+
+            foreach ($values as $token) {
+                $query->whereRaw("CAST({$column} AS CHAR) LIKE ?", ["%{$token}%"]);
+            }
+
+            return;
+        }
+
         $method = $filterType === 'date' ? 'whereDate' : 'where';
 
         switch ($mode) {
@@ -526,6 +548,21 @@ class RwTableAction
                 $query->{$method}($column, '=', $value);
                 break;
         }
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private static function normalizeOptionFilterValues(mixed $value): array
+    {
+        $values = is_array($value) ? $value : [$value];
+
+        return collect($values)
+            ->map(static fn (mixed $item): string => trim((string) $item))
+            ->filter(static fn (string $item): bool => $item !== '')
+            ->unique()
+            ->values()
+            ->all();
     }
 
     /**

@@ -1,5 +1,30 @@
 # RWTable Monorepo
 
+RWTable is a combined package consisting of a Vue 3 table component and a server-side Laravel / Inertia action class.
+
+The table is specifically designed for use with Vue 3 / Inertia / Laravel. The styling is based on Tailwind CSS, and a Vuetify-styled version will be available soon.  
+The table itself can also be used independently of Inertia and Laravel, but Excel export and chart export currently still rely fully on Inertia.
+
+The following features are available:
+
+- Client- or server-side data handling
+- Pagination (with configurable row counts) or endless scroll
+- General search field
+- Column sorting
+- Config menu with adjustable table height and toggleable horizontal/vertical scrolling
+- Column selection and reordering for table visibility
+- Resizable column widths and column reordering
+- Sticky (fixed) columns
+- Per-column filtering with logical expressions
+- Excel export
+- Chart export (based on ECharts.js)
+- Custom actions menu to add your own functionality
+- Multi-language support according to Laravel standards
+- Inline editing
+- Column layouts with chips, icons, custom date formatting, select and autocomplete fields
+- Client-side and/or server-side validation during editing
+- Custom actions on column / cell click and more...
+
 This repository contains only the publishable RWTable packages:
 
 - `packages/rwtable-vue` -> npm package `@rudiwer/rwtable-vue`
@@ -32,21 +57,11 @@ For a new release tag (example `v0.9.1`):
 5. Publish npm from `RUDIWER/rwtable-vue`.
 6. Let Packagist update from `RUDIWER/rwtable-laravel`.
 
-## Required GitHub Secrets
+Required release secrets and token scopes are documented in:
 
-- In `RUDIWER/rwtable-monorepo`:
-  - `RWTABLE_MIRROR_TOKEN` (used by split/tag workflows to push to mirror repos)
-- In `RUDIWER/rwtable-vue`:
-  - `NPM_TOKEN` (used by npm release workflow to publish package)
+- `docs/rwtable-monorepo-release-blueprint.md`
 
-`RWTABLE_MIRROR_TOKEN` is a GitHub Personal Access Token with write access to:
-
-- `RUDIWER/rwtable-vue`
-- `RUDIWER/rwtable-laravel`
-
-Without this token, monorepo workflows can run but cannot push code/tags to mirror repositories.
-
-## Installation In Another Project
+## Installation In a Project
 
 After publication:
 

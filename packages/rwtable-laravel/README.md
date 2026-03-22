@@ -1,6 +1,31 @@
 # rudiwer/rwtable-laravel
 
-Reusable Laravel backend package for RWTable.
+Reusable Laravel / Inertia backend package for the RWTable Vue 3 component
+
+RWTable is a combined package consisting of a Vue 3 table component and a server-side Laravel / Inertia action class.
+
+The table is specifically designed for use with Vue 3 / Inertia / Laravel. The styling is based on Tailwind CSS, and a Vuetify-styled version will be available soon.  
+The table itself can also be used independently of Inertia and Laravel, but Excel export and chart export currently still rely fully on Inertia.
+
+The following features are available:
+
+- Client- or server-side data handling
+- Pagination (with configurable row counts) or endless scroll
+- General search field
+- Column sorting
+- Config menu with adjustable table height and toggleable horizontal/vertical scrolling
+- Column selection and reordering for table visibility
+- Resizable column widths and column reordering
+- Sticky (fixed) columns
+- Per-column filtering with logical expressions
+- Excel export
+- Chart export (based on ECharts.js)
+- Custom actions menu to add your own functionality
+- Multi-language support according to Laravel standards
+- Inline editing
+- Column layouts with chips, icons, custom date formatting, select and autocomplete fields
+- Client-side and/or server-side validation during editing
+- Custom actions on column / cell click and more...
 
 This package provides:
 
@@ -45,6 +70,7 @@ Monorepo split/release blueprint:
 Notes:
 
 - Laravel 10 is **not** supported by the current package constraints.
+- Not yet tested in a project with laravel 11 / 12
 - If your frontend uses RWTable Vue components, pair this package with Vue `3.4+`, `@inertiajs/vue3 2+`, and Tailwind CSS `3.2+` for intended styling.
 
 From `composer.json`:
@@ -61,7 +87,7 @@ From `composer.json`:
 
 ## Installation
 
-## Quick Start (production install)
+### Quick Start (production install)
 
 ```bash
 composer require rudiwer/rwtable-laravel:^x.y
@@ -72,15 +98,12 @@ php artisan migrate
 
 Use matching major/minor versions for both packages (`x.y`).
 
-## Advanced (local development install)
+Frontend-specific features such as the top-right toolbar 3-dot menu payload and
+date/datetime display formatting are documented in:
 
-## Standard install
+- `packages/rwtable-vue/README.md`
 
-```bash
-composer require rudiwer/rwtable-laravel
-```
-
-## Path install (local development)
+### Optional: local path install (maintainers)
 
 Add a path repository in your app `composer.json`:
 
@@ -96,7 +119,7 @@ Add a path repository in your app `composer.json`:
 }
 ```
 
-Then require the package:
+Then require the package from that local path:
 
 ```bash
 composer require rudiwer/rwtable-laravel:*
@@ -354,7 +377,8 @@ Supports:
 
 - global search,
 - typed filtering (`text`, `number`, `date`, `datetime`),
-- filter modes (`=`, `!=`, `contains`, `contains not`, `>`, `<`),
+- filter modes (`=`, `!=`, `bevat`, `bevat niet`, `>`, `<`),
+- option filter modes (`option_contains`, `option_equals`),
 - selection filtering (`none`, `exclude`, `only`),
 - pagination,
 - sorting,
@@ -381,7 +405,7 @@ Practical `handle` request payload (all key arrays):
   },
   "filterModes": {
     "status": "=",
-    "title": "contains",
+    "title": "bevat",
     "created_at": "between"
   },
   "filterTypes": {
@@ -393,6 +417,25 @@ Practical `handle` request payload (all key arrays):
   "selectedRowIds": [12, 14],
   "manualOrdering": 0,
   "manualOrderField": "sort_index"
+}
+```
+
+Option-mode example (single/multi option filters):
+
+```json
+{
+  "filters": {
+    "priority": "high",
+    "tags": ["backend", "urgent"]
+  },
+  "filterModes": {
+    "priority": "option_equals",
+    "tags": "option_contains"
+  },
+  "filterTypes": {
+    "priority": "text",
+    "tags": "text"
+  }
 }
 ```
 
