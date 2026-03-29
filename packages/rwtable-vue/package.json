@@ -1,6 +1,6 @@
 {
   "name": "@rudiwer/rwtable-vue",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "private": false,
   "description": "Reusable RWTable Vue 3 component package.",
   "license": "MIT",
@@ -29,11 +29,13 @@
       "require": "./dist/index.cjs"
     },
     "./contracts": "./src/contracts/rwtableContract.js",
+    "./validation": "./src/validation/rules.js",
     "./dist/rwtable-vue.css": "./dist/rwtable-vue.css"
   },
   "files": [
     "dist",
     "src/contracts",
+    "src/validation",
     "README.md"
   ],
   "publishConfig": {
